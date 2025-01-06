@@ -100,6 +100,7 @@ const Category_Schema = new mongoose.Schema({
 
 const Category_Datas = mongoose.model("CategoryLists", Category_Schema);
 
+// --------Insert Datas
 app.post("/InsertCategoryDatas", upload.single('CategoryImage'), async (req, res) => {
     const { Categoryname} = req.body;
     const imageUrl = req.file ? `http://localhost:${Port}/uploads/${req.file.filename}` : '';
@@ -115,7 +116,8 @@ app.post("/InsertCategoryDatas", upload.single('CategoryImage'), async (req, res
 });
 
 
-app.get("/GetCategoryDatas", async (req, res) => {
+// -----------Fetching Datas
+app.get("/GetCategoryDatas", async(req, res) => {
     try {
         const totaldatas = await Category_Datas.find();
         if (!totaldatas || totaldatas.length === 0) 
@@ -125,6 +127,19 @@ app.get("/GetCategoryDatas", async (req, res) => {
         res.status(200).send({ totaldatas });
     } catch (err) {
         res.status(500).send({ message: "Error fetching data", error: err.message });
+    }
+});
+
+
+// -------------Delete Datas
+app.delete("/DeleteCategoryDatas/:id", async(req,res) => {
+    try{
+        const {id} = req.params;
+        const findid = await Category_Datas.findByIdAndDelete(id);
+        return res.status(200).send({message : "Datas deleted successfully.."});
+    }
+    catch(err){
+        res.status(500).send({ message: "Error occurs for deletion", error: err.message });
     }
 });
 
