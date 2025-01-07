@@ -143,4 +143,37 @@ app.delete("/DeleteCategoryDatas/:id", async(req,res) => {
     }
 });
 
+
+//---------------Edit Datas
+app.put("/UpdateCategoryDatas/:id", upload.single("CategoryImage"), async (req, res) => {
+    try 
+    {
+        const { id } = req.params;
+        const { Categoryname } = req.body;
+
+        const existingCategory = await Category_Datas.findById(id);
+        if (!existingCategory) 
+        {
+            return res.status(404).json({ message: "Category not found" });
+        }
+
+        // Update category fields
+        if (Categoryname) existingCategory.Categoryname = Categoryname;
+        if (req.file) 
+        {
+            const imageUrl = `http://localhost:${Port}/uploads/${req.file.filename}`;
+            existingCategory.CategoryImage = imageUrl; 
+        }
+
+        await existingCategory.save();
+        res.status(200).json({ message: "Category updated successfully", category: existingCategory });
+    } 
+    catch (error) {
+        console.error("Error updating category:", error);
+        res.status(500).json({ message: "Failed to update category", error: error.message });
+    }
+});
+
+
+
 app.listen(Port, () => { console.log(`Server is listening on port ${Port}`) });
