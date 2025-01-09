@@ -66,6 +66,9 @@
 
 
 
+
+
+
 const express = require("express"); 
 const bodyParser = require("body-parser");
 const cors = require("cors");
@@ -99,6 +102,7 @@ const Category_Schema = new mongoose.Schema({
 });
 
 const Category_Datas = mongoose.model("CategoryLists", Category_Schema);
+
 
 // --------Insert Datas
 app.post("/InsertCategoryDatas", upload.single('CategoryImage'), async (req, res) => {
@@ -151,7 +155,7 @@ app.put("/UpdateCategoryDatas/:id", upload.single("CategoryImage"), async (req, 
         const { id } = req.params;
         const { Categoryname } = req.body;
 
-        const existingCategory = await Category_Datas.findById(id);
+        const existingCategory = await Category_Datas.findByIdAndUpdate(id);
         if (!existingCategory) 
         {
             return res.status(404).json({ message: "Category not found" });
@@ -177,3 +181,5 @@ app.put("/UpdateCategoryDatas/:id", upload.single("CategoryImage"), async (req, 
 
 
 app.listen(Port, () => { console.log(`Server is listening on port ${Port}`) });
+
+
