@@ -148,7 +148,7 @@ app.delete("/DeleteCategoryDatas/:id", async(req,res) => {
 });
 
 
-//---------------Edit Datas
+//---------------Update Datas
 app.put("/UpdateCategoryDatas/:id", upload.single("CategoryImage"), async (req, res) => {
     try 
     {
