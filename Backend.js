@@ -96,6 +96,8 @@ mongoose.connect("mongodb://localhost:27017/JobPortal")
 .then(() => { console.log("MongoDB connected..") })
 .catch((err) => { console.log("Failed to connect MongoDB", err) });
 
+
+//--------------------------------------------------------- CATEGORY DATAS --------------------------------------------------------- // 
 const Category_Schema = new mongoose.Schema({
     Categoryname : { type : String , required : true },
     CategoryImage: { type : String , required : true }
@@ -175,6 +177,52 @@ app.put("/UpdateCategoryDatas/:id", upload.single("CategoryImage"), async (req, 
     catch (error) {
         console.error("Error updating category:", error);
         res.status(500).json({ message: "Failed to update category", error: error.message });
+    }
+});
+
+
+
+
+//--------------------------------------------------------- JOB DATAS --------------------------------------------------------- // 
+const job_schema = new mongoose.Schema({
+    MainCategory: { type: String, required: true },
+    JobPosition: { type: String, required: true },
+    Description: { type: String, required: true },
+    Salary: { type: Number, required: true },
+    WebsiteLink: { type: String },
+    NoticePeriod: { type: String },
+    Location: { type: String, required: true },
+    JobType: { type: String },
+    Image: { type: String }
+})
+const Job_Datas = mongoose.model("Job Datas",job_schema);
+
+// ---------------Insert JobDatas
+app.post("/InsertJobDatas",upload.single("Image"),async(req,res)=>{
+    const {MainCategory,JobPosition,Description,Salary,WebsiteLink,NoticePeriod,Location,JobType} = req.body;
+    const Imag_Url = req.file ? `http://localhost:${Port}/uploads/${req.file.filename}` : "";
+    try{
+        const newJob_Datas = new Job_Datas({MainCategory,JobPosition,Description,Salary,WebsiteLink,NoticePeriod,Location,JobType,Image:Imag_Url});
+        await newJob_Datas.save();
+        res.status(200).send({message : "JobDatas inserted"});
+    }
+    catch(err){
+        res.status(500).send({ message: "Error inserting Jobdatas", error: err.message });
+    }
+});
+
+// ---------------Fetching JobDatas
+app.get("/GetJobDatas", async(req,res) => {
+    try{
+        const totaljobdatas = await Job_Datas.find();
+        if (!totaljobdatas || totaljobdatas.length === 0) 
+            {
+                return res.status(404).send({ message: "No categories found" });
+            }
+        res.status(200).send({totaljobdatas});
+    }
+    catch(err){
+        res.status(500).send({ message: "Error fetching data", error: err.message });
     }
 });
 
