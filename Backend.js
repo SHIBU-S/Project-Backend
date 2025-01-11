@@ -189,11 +189,11 @@ const job_schema = new mongoose.Schema({
     JobPosition: { type: String, required: true },
     Description: { type: String, required: true },
     Salary: { type: Number, required: true },
-    WebsiteLink: { type: String },
+    WebsiteLink: { type: String, required: true },
     NoticePeriod: { type: String },
     Location: { type: String, required: true },
-    JobType: { type: String },
-    Image: { type: String }
+    JobType: { type: String, required: true },
+    Image: { type: String, required: true }
 })
 const Job_Datas = mongoose.model("Job Datas",job_schema);
 
@@ -226,6 +226,17 @@ app.get("/GetJobDatas", async(req,res) => {
     }
 });
 
+// ----------------Delete JobDatas
+app.delete("/DeleteJobDatas/:id", async(req,res) => {
+    try{
+        const {id} = req.params;
+        const findid = await Job_Datas.findByIdAndDelete(id);
+        res.status(200).send({ message: "Data Deleted" });
+    }
+    catch(err){
+        res.status(500).send({ message: "Error occurs for deletion", error: err.message });
+    }
+})
 
 
 app.listen(Port, () => { console.log(`Server is listening on port ${Port}`) });
