@@ -239,35 +239,6 @@ app.delete("/DeleteJobDatas/:id", async(req,res) => {
 });
 
 // ----------------Update JobDatas
-// app.put("/EditJobDatas/:id", upload.single("Image") , async(req,res) => {
-//     try{
-//         const {id} = req.params;
-//         const {MainCategory,JobPosition,Description,Salary,WebsiteLink,NoticePeriod,Location,JobType,Image} = req.body;
-//         const existingJobData = await Job_Datas.findByIdAndUpdate(id);
-//         const newImageUrl = req.file ? `http://localhost:${Port}/uploads/${req.file.filename}` : '';
-//         if (MainCategory) existingJobData.MainCategory = MainCategory;
-//         if (JobPosition) existingJobData.JobPosition = JobPosition;
-//         if (Description) existingJobData.Description = Description;
-//         if (Salary) existingJobData.Salary = Salary;
-//         if (WebsiteLink) existingJobData.WebsiteLink = WebsiteLink;
-//         if (NoticePeriod) existingJobData.NoticePeriod = NoticePeriod;
-//         if (Location) existingJobData.Location = Location;
-//         if (JobType) existingJobData.JobType = JobType;
-//         if (newImageUrl) existingJobData.Image = newImageUrl;
-
-//         // Save the updated document
-//         const updatedJobData = await existingJobData.save();
-
-//         res.status(200).json({
-//             message: "Job data successfully updated.",
-//             data: updatedJobData
-//         });
-//     }
-//     catch (err) {
-//         console.error("Error updating job data:", err);
-//         res.status(500).json({ message: "An error occurred while updating job data." });
-//     }
-// });
 app.put("/EditJobDatas/:id", upload.single("Image"), async (req, res) => {
     try {
         const { id } = req.params;
@@ -279,16 +250,7 @@ app.put("/EditJobDatas/:id", upload.single("Image"), async (req, res) => {
         }
 
         // Extract fields from the request
-        const {
-            MainCategory,
-            JobPosition,
-            Description,
-            Salary,
-            WebsiteLink,
-            NoticePeriod,
-            Location,
-            JobType,
-        } = req.body;
+        const {MainCategory,JobPosition,Description,Salary,WebsiteLink,NoticePeriod,Location,JobType,} = req.body;
 
         // Update fields if provided
         if (MainCategory) existingJobData.MainCategory = MainCategory;
