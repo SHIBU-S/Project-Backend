@@ -243,16 +243,13 @@ app.put("/EditJobDatas/:id", upload.single("Image"), async (req, res) => {
     try {
         const { id } = req.params;
 
-        // Fetch existing job data
         const existingJobData = await Job_Datas.findById(id);
         if (!existingJobData) {
             return res.status(404).json({ message: "Job data not found." });
         }
 
-        // Extract fields from the request
         const {MainCategory,JobPosition,Description,Salary,WebsiteLink,NoticePeriod,Location,JobType,} = req.body;
 
-        // Update fields if provided
         if (MainCategory) existingJobData.MainCategory = MainCategory;
         if (JobPosition) existingJobData.JobPosition = JobPosition;
         if (Description) existingJobData.Description = Description;
@@ -262,13 +259,11 @@ app.put("/EditJobDatas/:id", upload.single("Image"), async (req, res) => {
         if (Location) existingJobData.Location = Location;
         if (JobType) existingJobData.JobType = JobType;
 
-        // Handle file upload
         if (req.file) {
             const newImageUrl = `http://localhost:${Port}/uploads/${req.file.filename}`;
             existingJobData.Image = newImageUrl;
         }
 
-        // Save the updated document
         const updatedJobData = await existingJobData.save();
 
         res.status(200).json({
