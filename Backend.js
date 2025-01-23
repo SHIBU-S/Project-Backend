@@ -190,7 +190,6 @@ const job_schema = new mongoose.Schema({
     Description: { type: String, required: true },
     Salary: { type: Number, required: true },
     WebsiteLink: { type: String, required: true },
-    NoticePeriod: { type: String },
     Location: { type: String, required: true },
     JobType: { type: String, required: true },
     Image: { type: String, required: true }
@@ -199,10 +198,10 @@ const Job_Datas = mongoose.model("Job Datas",job_schema);
 
 // ---------------Insert JobDatas
 app.post("/InsertJobDatas",upload.single("Image"),async(req,res)=>{
-    const {MainCategory,JobPosition,Description,Salary,WebsiteLink,NoticePeriod,Location,JobType} = req.body;
+    const {MainCategory,JobPosition,Description,Salary,WebsiteLink,Location,JobType} = req.body;
     const Imag_Url = req.file ? `http://localhost:${Port}/uploads/${req.file.filename}` : "";
     try{
-        const newJob_Datas = new Job_Datas({MainCategory,JobPosition,Description,Salary,WebsiteLink,NoticePeriod,Location,JobType,Image:Imag_Url});
+        const newJob_Datas = new Job_Datas({MainCategory,JobPosition,Description,Salary,WebsiteLink,Location,JobType,Image:Imag_Url});
         await newJob_Datas.save();
         res.status(200).send({message : "JobDatas inserted"});
     }
@@ -210,6 +209,7 @@ app.post("/InsertJobDatas",upload.single("Image"),async(req,res)=>{
         res.status(500).send({ message: "Error inserting Jobdatas", error: err.message });
     }
 });
+
 
 // ---------------Fetching JobDatas
 app.get("/GetJobDatas", async(req,res) => {
@@ -226,6 +226,7 @@ app.get("/GetJobDatas", async(req,res) => {
     }
 });
 
+
 // ----------------Delete JobDatas
 app.delete("/DeleteJobDatas/:id", async(req,res) => {
     try{
@@ -238,6 +239,7 @@ app.delete("/DeleteJobDatas/:id", async(req,res) => {
     }
 });
 
+
 // ----------------Update JobDatas
 app.put("/EditJobDatas/:id", upload.single("Image"), async (req, res) => {
     try {
@@ -248,14 +250,13 @@ app.put("/EditJobDatas/:id", upload.single("Image"), async (req, res) => {
             return res.status(404).json({ message: "Job data not found." });
         }
 
-        const {MainCategory,JobPosition,Description,Salary,WebsiteLink,NoticePeriod,Location,JobType,} = req.body;
+        const {MainCategory,JobPosition,Description,Salary,WebsiteLink,Location,JobType,} = req.body;
 
         if (MainCategory) existingJobData.MainCategory = MainCategory;
         if (JobPosition) existingJobData.JobPosition = JobPosition;
         if (Description) existingJobData.Description = Description;
         if (Salary) existingJobData.Salary = Salary;
         if (WebsiteLink) existingJobData.WebsiteLink = WebsiteLink;
-        if (NoticePeriod) existingJobData.NoticePeriod = NoticePeriod;
         if (Location) existingJobData.Location = Location;
         if (JobType) existingJobData.JobType = JobType;
 
@@ -273,6 +274,40 @@ app.put("/EditJobDatas/:id", upload.single("Image"), async (req, res) => {
     } catch (err) {
         console.error("Error updating job data:", err);
         res.status(500).json({ message: "An error occurred while updating job data." });
+    }
+});
+
+
+
+//--------------------------------------------------------- BLOG DATAS --------------------------------------------------------- //
+const Blog_Schema = new mongoose.Schema({
+    BlogTitle : { type : String },
+    BlogImage : { type : String },
+    BlogDescription : { type : String }
+})
+const Blog_Datas = mongoose.model("BlogLists",Blog_Schema);
+
+// --------Insert Blog Datas
+app.post("/InsertBlogDatas", upload.single("BlogImage") , async(req,res)=>{
+    const {BlogTitle,BlogDescription} = req.body;
+    const blogimgurl = req.file ? `http://localhost:${Port}/uploads/${req.file.filename}` : '';
+    try{
+        const newblogdatas = new Blog_Datas({BlogTitle,BlogImage:blogimgurl,BlogDescription});
+        await newblogdatas.save();
+    }
+    catch(err){
+        res.status(500).send({ message: "Error inserting blog data", error: err.message });
+    }
+});
+
+// --------Fetch Blog Datas
+app.get("/GetBlogDatas", async(req,res)=>{
+    try{
+        const totalblogdatas = await Blog_Datas.find();
+        res.send({totalblogdatas});
+    }
+    catch(err){
+        res.status(500).send({ message: "Error fetching blog data", error: err.message });
     }
 });
 
