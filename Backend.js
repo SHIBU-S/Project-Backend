@@ -300,6 +300,38 @@ app.post("/InsertBlogDatas", upload.single("BlogImage") , async(req,res)=>{
     }
 });
 
+// --------Delete Blog Datas
+app.delete("/DeleteBlogDatas/:id", async(req,res)=>{
+    try{
+        const {id} = req.params;
+        const findid = await Blog_Datas.findByIdAndDelete(id);
+        return res.status(200).send({message : "Blog Datas deleted successfully.."});
+    }
+    catch(err){
+        res.status(404).send({message:"Error deleting blog datas"});
+    }
+});
+
+// --------Update Blog Datas
+app.put("/UpdateBlogDatas/:id", upload.single("BlogImage") , async(req,res)=>{
+    const {id} = req.params;
+    const {BlogTitle,BlogDescription} = req.body;
+    try{
+        const existingBlogDatas = await Blog_Datas.findById(id);
+        if(BlogTitle) existingBlogDatas.BlogTitle = BlogTitle; 
+        if(req.file) { 
+            const newBlogImage = `http://localhost:${Port}/uploads/${req.file.filename}`;
+            existingBlogDatas.BlogImage = newBlogImage;
+        }
+        if(BlogDescription) existingBlogDatas.BlogDescription = BlogDescription;
+        await existingBlogDatas.save();
+        res.send({message : "Blog Datas Updated successfully.."});
+    }
+    catch(err){
+        res.status(404).send({message:"Error Updating Blog Datas"});
+    }
+});
+
 // --------Fetch Blog Datas
 app.get("/GetBlogDatas", async(req,res)=>{
     try{
